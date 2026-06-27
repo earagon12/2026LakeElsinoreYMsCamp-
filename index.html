@@ -349,6 +349,7 @@
   <div class="step-tab" id="tab-1" onclick="goTo(1)"><span class="num">2</span><span class="check">✓</span><br>Alpine Slide</div>
   <div class="step-tab" id="tab-2" onclick="goTo(2)"><span class="num">3</span><span class="check">✓</span><br>MTB Form</div>
   <div class="step-tab" id="tab-3" onclick="goTo(3)"><span class="num">4</span><span class="check">✓</span><br>Snow Summit</div>
+  <div class="step-tab" id="tab-4" onclick="goTo(4)"><span class="num">5</span><span class="check">✓</span><br>Lake Day</div>
 </div>
 
 <!-- PAGE 0: OVERVIEW -->
@@ -376,7 +377,7 @@
     <div class="overview-row">
       <div class="ov-icon tue">🚵</div>
       <div class="ov-text">
-        <strong>MTB participant info</strong>
+        <strong>Mountain biking participant info</strong>
         <span>Tuesday, July 7 &nbsp;·&nbsp; Bike fit and skill level for Snow Summit</span>
       </div>
       <span class="ov-status needed" id="status-mtb">Needed</span>
@@ -388,6 +389,14 @@
         <span>Tuesday, July 7 &nbsp;·&nbsp; Complete online at their site</span>
       </div>
       <span class="ov-status needed" id="status-summit">Needed</span>
+    </div>
+    <div class="overview-row">
+      <div class="ov-icon" style="background:#e0f2fe;">🚤</div>
+      <div class="ov-text">
+        <strong>Wakeboard / boat waiver</strong>
+        <span>Wednesday, July 8 &nbsp;·&nbsp; Designated Wake Sports via FareHarbor</span>
+      </div>
+      <span class="ov-status needed" id="status-wake">Needed</span>
     </div>
   </div>
 
@@ -495,7 +504,7 @@
         <input type="radio" name="skill" value="BEGINNER (XC)" onchange="selectSkill(this)">
         <div>
           <div class="opt-label">Beginner — XC group</div>
-          <div class="opt-desc">Little or no MTB experience. Comfortable on a regular bike but new to trails. Rides XC bike on green trails with a pod lead.</div>
+          <div class="opt-desc">Little or no mountain biking experience. Comfortable on a regular bike but new to trails. Rides XC bike on green trails with a pod lead.</div>
         </div>
       </label>
       <label class="skill-opt" id="skill-int">
@@ -582,12 +591,50 @@
     <div class="success-card" id="summit-success" style="display:none;margin-top:12px;">
       <div class="icon">✅</div>
       <h3>All done!</h3>
-      <p>Snow Summit waiver confirmed. You're fully cleared for camp — see you July 6th!</p>
+      <p>Snow Summit waiver confirmed. One more — the lake day waiver on the next step.</p>
     </div>
   </div>
 
   <div class="btn-row" style="margin-top:4px;">
     <button class="btn-secondary" onclick="goTo(2)">← Back</button>
+    <button class="btn-primary" onclick="goTo(4)">Next: Lake Day →</button>
+  </div>
+</div>
+
+<!-- PAGE 4: WAKEBOARD WAIVER -->
+<div class="page" id="page-4">
+  <div class="day-badge" style="background:#e0f2fe;color:#0369a1;">📅 Wednesday, July 8</div>
+  <h2 class="page-title">Lake day waiver</h2>
+  <p class="page-sub">Designated Wake Sports requires a waiver before you board. Tap below to complete it on their FareHarbor page — takes about 2 minutes.</p>
+
+  <div class="card">
+    <div style="font-size:14px; color:var(--gray-600); margin-bottom:16px; line-height:1.6;">
+      <strong style="color:var(--gray-800);display:block;margin-bottom:4px;">Before you tap the button:</strong>
+      A parent or guardian must sign for anyone 17 and under. The waiver is tied to your group booking — complete it before Wednesday July 8.
+    </div>
+    <a class="external-link-btn" href="https://fareharbor.com/waivers?shortname=designatedwakesports&bookingUuid=8e5e564e-ed6a-4c48-a6c2-c787084e1432&source=email-booking-confirmation" target="_blank">
+      🚤 Complete lake day waiver &nbsp;↗
+    </a>
+    <div class="external-link-note">Opens FareHarbor / Designated Wake Sports in a new tab</div>
+  </div>
+
+  <div class="card" style="margin-top:4px;">
+    <div class="card-title">Once you've finished the waiver</div>
+    <div style="font-size:14px; color:var(--gray-600); line-height:1.6;">
+      Tap below to confirm — then you're fully cleared for all three days of activities!
+    </div>
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn-primary" onclick="markDone('wake'); showWakeDone();">✓ Mark waiver done</button>
+    </div>
+    <div class="success-card" id="wake-success" style="display:none;margin-top:12px;">
+      <div class="icon">✅</div>
+      <h3>All done!</h3>
+      <p>All waivers complete. You're fully cleared for camp — see you July 6th!</p>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:4px;">
+    <button class="btn-secondary" onclick="goTo(3)">← Back</button>
   </div>
 </div>
 
@@ -608,14 +655,17 @@ function goTo(n) {
 
 function markDone(key) {
   done[key] = true;
-  const map = { alpine:'status-alpine', mtb:'status-mtb', summit:'status-summit' };
+  const map = { alpine:'status-alpine', mtb:'status-mtb', summit:'status-summit', wake:'status-wake' };
   const el = document.getElementById(map[key]);
   if(el){ el.textContent='Done ✓'; el.className='ov-status done'; }
-  document.getElementById('tab-' + ({alpine:1,mtb:2,summit:3}[key])).classList.add('done');
+  const tabMap = {alpine:1,mtb:2,summit:3,wake:4}; if(tabMap[key]) document.getElementById('tab-'+tabMap[key]).classList.add('done');
 }
 
 function showSummitDone() {
   document.getElementById('summit-success').style.display='block';
+}
+function showWakeDone() {
+  document.getElementById('wake-success').style.display='block';
 }
 
 function fv(id){ return (document.getElementById(id)||{}).value||''; }
@@ -640,58 +690,116 @@ function downloadAlpineWaiver(){
   err.style.display='none';
 
   const doc = new jsPDF({unit:'pt',format:'letter'});
-  const W=612, M=54, CW=W-M*2;
-  let y=50;
+  const W=612, M=50, CW=W-M*2;
+  const lh=10.5;
+  let y=46;
 
-  doc.setFont('helvetica','bold'); doc.setFontSize(14);
-  doc.text('ALPINE SLIDE AT MAGIC MOUNTAIN', W/2, y, {align:'center'}); y+=18;
-  doc.setFontSize(10);
-  doc.text('Release, Waiver & Assumption of Risk, and Indemnity Agreement', W/2, y, {align:'center'}); y+=16;
-  doc.setDrawColor(180); doc.line(M,y,W-M,y); y+=14;
-
-  doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
-  const body = 'WARNING – Riding the Alpine Slide and related ACTIVITIES at this facility are potentially dangerous and involve inherent risks. Engaging in any ACTIVITY is done at your own risk. By participating you agree to accept these risks, which include collisions with obstacles or other persons, going off-course, and a variety of personal harm and/or property damage including broken bones, cuts, lacerations, head or facial injuries, and spinal injuries.\n\nBY SIGNING THIS RELEASE AND WAIVER, YOU ACKNOWLEDGE THAT: (1) Engaging in the ACTIVITIES involves inherent risks and you assume the risk of any injuries including death. (2) You hereby release and waive all claims against Big Bear Family Recreation, Inc. dba "Alpine Slide at Magic Mountain," its affiliates, officers, directors, employees, agents, and property owners. (3) You agree to indemnify Releasees from any claims, lawsuits, or attorney\'s fees arising from participation. (4) You have read and agree to follow all posted rules and regulations. (5) No person under 18 may participate without this parent/guardian signature. (6) Your typed name constitutes an original electronic signature to this agreement.\n\nPHOTO RELEASE: Many areas of the facility are filmed via CCTV. By signing, you consent to photo/video use by the facility on behalf of yourself and the minor(s) listed below.';
-  y = wrapText(doc, body, M, y, CW, 12); y+=10;
-
-  doc.setDrawColor(180); doc.line(M,y,W-M,y); y+=14;
-  doc.setFont('helvetica','bold'); doc.setFontSize(11);
-  doc.text('Signature', M, y); y+=14;
-
-  const fields = [
-    ['Signature (typed / electronic):', fv('a-signature')],
-    ['Printed name:', fv('a-pg-printed')],
-    ['Date:', fv('a-sig-date')],
-    ['Relationship to minor:', fv('a-relationship')],
-  ];
-  doc.setFontSize(10);
-  fields.forEach(([lbl,val])=>{
-    doc.setFont('helvetica','bold'); doc.text(lbl, M, y);
-    const lw = doc.getTextWidth(lbl);
-    doc.setFont('helvetica','normal'); doc.text(val||'', M+lw+6, y);
-    y+=15;
-  });
-  y+=8;
-
-  doc.setFont('helvetica','bold'); doc.setFontSize(11);
-  doc.text('Minor participant(s)', M, y); y+=14;
-  doc.setFontSize(10);
-  const m1 = fv('a-minor1'), m1d = fv('a-minor1-dob');
-  const m2 = fv('a-minor2'), m2d = fv('a-minor2-dob');
-  doc.setFont('helvetica','bold'); doc.text("Minor's name:", M, y);
-  doc.setFont('helvetica','normal'); doc.text(m1, M+90, y);
-  doc.setFont('helvetica','bold'); doc.text('DOB:', M+270, y);
-  doc.setFont('helvetica','normal'); doc.text(m1d, M+294, y); y+=15;
-  if(m2){
-    doc.setFont('helvetica','bold'); doc.text("Minor's name:", M, y);
-    doc.setFont('helvetica','normal'); doc.text(m2, M+90, y);
-    doc.setFont('helvetica','bold'); doc.text('DOB:', M+270, y);
-    doc.setFont('helvetica','normal'); doc.text(m2d, M+294, y); y+=15;
+  function wrap(text, x, startY, maxW, leading){
+    const lines=doc.splitTextToSize(text,maxW);
+    lines.forEach(l=>{ doc.text(l,x,startY); startY+=leading; });
+    return startY;
   }
-  y+=10;
-  doc.setDrawColor(180); doc.line(M,y,W-M,y); y+=10;
-  doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(130);
-  doc.text('Stake Young Men\'s Camp 2026 · Alpine Slide · Monday July 7, 2026', M, y); y+=11;
-  doc.text('Return to: Eric Aragon · Eric.aragon@gmail.com · 951-203-1704', M, y);
+
+  // Header
+  doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('ALPINE SLIDE AT MAGIC MOUNTAIN', W/2, y, {align:'center'}); y+=14;
+  doc.setFontSize(9);
+  doc.text('RELEASE, WAIVER & ASSUMPTION OF RISK, AND', W/2, y, {align:'center'}); y+=11;
+  doc.text('INDEMNITY AGREEMENT', W/2, y, {align:'center'}); y+=13;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  y = wrap('PLEASE BE ADVISED THAT BY SIGNING THIS AGREEMENT, YOU ACKNOWLEDGE THAT YOU HAVE READ AND UNDERSTAND THE TERMS. ALSO, THIS DOCUMENT AFFECTS YOUR LEGAL RIGHTS.', M, y, CW, lh); y+=7;
+
+  // Warning paragraph
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  y = wrap('WARNING \u2013 Riding the ALPINE SLIDE, tubing (using a rubber inner tube to slide on snow, sometimes referred to herein as \u201cSnow Play Hill\u201d), riding the water slide, riding/driving a go-kart, riding the Mineshaft Coaster and/or Soaring Eagle (collectively referred to as the \u201cACTIVITIES\u201d) at this facility are potentially dangerous activities, and involve inherent risks.', M, y, CW, lh); y+=5;
+  y = wrap('Engaging or participating in any of the ACTIVITIES is done at your own risk, and by your participation, you agree to accept these risks. Some of the dangers and risks associated with the ACTIVITIES include, among others, collisions with obstacles (both man-made and natural), collisions with other persons (including the other person on your sled), sleds and tubes, or going \u201coff course\u201d and landing in a non-ACTIVITIES area, all of which can cause a variety of personal harm and/or damage to you and/or your property.', M, y, CW, lh); y+=7;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  y = wrap('BY SIGNING THIS RELEASE AND WAIVER, YOU ACKNOWLEDGE YOUR UNDERSTANDING AND AGREEMENT THAT:', M, y, CW, lh); y+=5;
+
+  // 7 numbered clauses - all verbatim
+  const clauses = [
+    '1. ENGAGING IN THE ACTIVITIES IS POTENTIALLY DANGEROUS AND INVOLVES INHERENT RISKS, AND THAT YOU ASSUME THE RISK OF ANY INJURIES AND/OR DEATH WHICH MAY RESULT FROM SUCH PARTICIPATION. THIS APPLIES TO ALL PARTICIPANTS INCLUDING THOSE UNDER THE AGE OF 18 FOR WHOM A PARENT OR GUARDIAN HAS SIGNED THIS RELEASE AND WAIVER. SUCH INJURIES WHICH ARE ASSUMED, BUT IN NO WAY LIMITED TO: BROKEN BONES, CUTS, LACERATIONS, HEAD OR FACIAL INJURIES, SPINAL INJURIES, AND INJURIES TO APPENDAGES.',
+    '2. I HEREBY RELEASE AND WAIVE ANY AND ALL CLAIMS, LOSSES, INJURIES, OTHER DAMAGES, INCLUDING DEATH, THAT MAY OCCUR OR IN ANY WAY ARISE OUT OF, FROM, ARE RELATED TO, CAUSED BY OR RESULT FROM MY OR THE MINOR(S) PARTICIPATION IN ANY OF THE ACTIVITIES (COLLECTIVELY, THE \u201cCLAIMS\u201d) HOWEVER THE INJURY OCCURS, AND THAT I AGREE HOLD BIG BEAR FAMILY RECREATION, INC. dba \u201cALPINE SLIDE AT MAGIC MOUNTAIN\u201d, CHAPS LEASING, INC., B&S LAND, INC., K&L LEASING, INC. AND THEIR AFFILIATES, SUPPLIERS, MANUFACTURERS, VENDORS, SHAREHOLDERS, OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, ASSIGNS, MEMBERS, MANAGERS, SUCCESSORS IN INTEREST, PARTNERS, REPRESENTATIVES, ASSIGNEES AND ANY OF THE OWNERS OF THE PROPERTY UPON WHICH THE ACTIVITIES ARE OPERATED (HEREINAFTER \u201cRELEASEES\u201d), HARMLESS FROM AND AGAINST SUCH CLAIMS, REGARDLESS OF WHETHER SUCH INJURY, DAMAGE OR DEATH WAS CAUSED BY THEIR NEGLIGENCE (TO ANY DEGREE), A BREACH OF WARRANTY, OR FROM ANY OTHER CAUSE. THE SCOPE OF THIS RELEASE SPECIFICALLY INCLUDES ANY MEDICAL TREATMENT PROVIDED, OR FAILED TO BE PROVIDED. SUCH RELEASE APPLIES TO THE PERSON SIGNING THIS DOCUMENT AND THE MINOR(S) LISTED BELOW. FURTHER, I AND THE MINOR(S) AGREE TO WAIVE ANY AND ALL CLAIMS RELATED TO ANY ISSUES RELATED TO STAFFING OF SNOW PLAY HILL, SUPERVISION OF DISPATCH DOWN SNOW PLAY HILL, AND/OR TRAINING AND SUPERVISING EMPLOYEES.',
+    '3. I AGREE TO INDEMNIFY RELEASEES AND HOLD THEM HARMLESS FROM ANY AND ALL CLAIMS, ACTIONS, SUITS, LIABILITIES, EXPENSES, INCLUDING ATTORNEY\'S FEES, WHICH MAY BE BROUGHT BY ANY PARTICIPANT, OR ANYONE ON THE PARTICIPANT\'S BEHALF (INCLUDING HEIRS), AS A RESULT OF ANY INJURY OR DEATH RELATED TO THE PARTICIPATION IN THE ACTIVITIES ADDRESSED HEREIN. SUCH INDEMNITY INCLUDES ANY LAWSUIT BROUGHT BY THE MINOR THROUGH A GUARDIAN ADLITEM; AND, SPECIFICALLY INCLUDES ATTORNEY\'S FEES AND COSTS INCURRED BY RELEASEES.',
+    '4. I HAVE READ AND UNDERSTAND THE POSTED RULES, REGULATIONS AND PROCEDURES REGARDING THE PARTICIPATION IN ANY OF THE ACTIVITIES AND THAT I AGREE TO ABIDE BY AND FOLLOW THOSE REGULATIONS AT ALL TIMES, INCLUDING THE RULES THAT REQUIRE ME AND THE MINOR FOR WHOM I AM THE PARENT OR GUARDIAN TO REMAIN SEATED IN THE ALPINE SLIDE SLED AND/OR MINESHAFT COASTER CART, AND TO OPERATE THE BRAKE IN THE ALPINE SLIDE SLED AND/OR MINESHAFT COASTER CART SO AS TO MAINTAIN A SAFE SPEED AND AN APPROPRIATELY SAFE DISTANCE BETWEEN OURSELVES AND OTHERS AND TO KEEP OUR ARMS AND LEGS INSIDE THE ALPINE SLIDE SLED AND/OR MINESHAFT COASTER CART DURING OPERATION TO MINIMIZE THE RISK OF INJURY. I FURTHER READ AND UNDERSTAND THE RIDE OPERATION, SAFETY RULES, AND SIGNS POSTED AT THE FACILITY, AND AGREE TO FOLLOW THEM.',
+    '5. NO PERSON UNDER THE AGE OF 18 IS PERMITTED TO PARTICIPATE IN ANY OF THE ACTIVITIES UNLESS AND UNTIL THE PARENT OR GUARDIAN OF THAT PERSON HAS SIGNED THIS RELEASE, WAIVER & ASSUMPTION OF RISK, AND INDEMNITY AGREEMENT. THE PARENT OR GUARDIAN OF SUCH MINOR SHALL BE SOLELY RESPONSIBLE FOR THAT MINOR; AND,',
+    '6. I SPECIFICALLY ACKNOWLEDGE THAT MY SIGNATURE ON/AT/IN THE ELECTRONIC SIGNATURE KEYPAD CONSTITUTES AN ORIGINAL SIGNATURE TO THIS RELEASE, WAIVER & ASSUMPTION OF RISK, AND INDEMNITY AGREEMENT AND THAT A REPRODUCED VERSION, COPY OR OTHER FACSIMILE OF MY SIGNATURE MAY BE USED AS AN ORIGINAL OF MY SIGNATURE, WHETHER SIGNED BY ME ON MY OWN BEHALF OR BY ME AS THE PARENT OR GUARDIAN OF A MINOR.',
+    '7. BY SIGNING THIS AGREEMENT, I AGREE THAT RELEASEES ARE PROVIDING RECREATIONAL SERVICES, AND NOT SELLING OR LEASING A PRODUCT. HENCE, RELEASEES SHALL NOT BE SUBJECT TO CLAIMS UNDER PRODUCTS LIABILITY OR WARRANTY CAUSES OF ACTION.',
+  ];
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+  clauses.forEach(c=>{ y = wrap(c, M, y, CW, lh); y+=4; });
+  y+=4;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  y = wrap('PLEASE CONDUCT YOURSELF IN A RESPONSIBLE AND SAFE MANNER AND BE CONSIDERATE OF OTHERS WHILE PARTICIPATING IN THE ACTIVITIES.', M, y, CW, lh); y+=7;
+
+  // Photo release (smaller, italic style)
+  doc.setFont('helvetica','normal'); doc.setFontSize(7);
+  y = wrap('PHOTO RELEASE: MANY AREAS OF THE FACILITY ARE FILMED VIA CCTV VIDEO, AND/OR PHOTOS ARE PERIODICALLY TAKEN OF THE OPERATIONS THROUGHOUT THE DAY. BY SIGNING THIS DOCUMENT, I, AND ON BEHALF OF THE MINOR(S) BELOW, CONSENT TO THE SAME, AND AUTHORIZE THEIR USE BY RELEASEES.', M, y, CW, lh-1); y+=10;
+
+  // Signature block — exact layout matching the form
+  const lineColor = 80;
+  doc.setDrawColor(lineColor); doc.setFontSize(9); doc.setFont('helvetica','normal');
+
+  // Signature line
+  doc.text('Signature', M, y);
+  doc.line(M+58, y, M+310, y);
+  doc.text('Date:', M+320, y);
+  doc.line(M+340, y, CW+M, y);
+  y+=16;
+
+  // Printed name line
+  doc.text('Printed Name', M, y);
+  doc.line(M+72, y, CW+M, y);
+  y+=16;
+
+  // Fill in the values the parent entered — placed just above the lines
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(0,0,180);
+  // Signature value (typed name)
+  doc.text(fv('a-signature'), M+60, y-17);
+  // Date value
+  doc.text(fv('a-sig-date'), M+342, y-17);
+  // Printed name value
+  doc.text(fv('a-pg-printed'), M+74, y-1);
+
+  doc.setTextColor(0); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+
+  // Minor 1 line
+  const m1=fv('a-minor1'), m1d=fv('a-minor1-dob');
+  const m2=fv('a-minor2'), m2d=fv('a-minor2-dob');
+
+  doc.text("Minor's Name", M, y);
+  doc.line(M+72, y, M+300, y);
+  doc.text('Date of Birth', M+310, y);
+  doc.line(M+375, y, CW+M, y);
+  // Fill minor 1 values
+  doc.setTextColor(0,0,180);
+  doc.text(m1, M+74, y-2);
+  doc.text(m1d, M+377, y-2);
+  doc.setTextColor(0);
+  y+=16;
+
+  // Minor 2 line
+  doc.text("Minor's Name", M, y);
+  doc.line(M+72, y, M+300, y);
+  doc.text('Date of Birth', M+310, y);
+  doc.line(M+375, y, CW+M, y);
+  if(m2){
+    doc.setTextColor(0,0,180);
+    doc.text(m2, M+74, y-2);
+    doc.text(m2d, M+377, y-2);
+    doc.setTextColor(0);
+  }
+  y+=18;
+
+  // Footer note
+  doc.setDrawColor(180); doc.line(M,y,W-M,y); y+=9;
+  doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(120);
+  doc.text('Completed electronically for Stake Young Men\'s Camp 2026 \u00b7 Alpine Slide \u00b7 Monday July 7, 2026', M, y); y+=10;
+  doc.text('Questions: Eric Aragon \u00b7 Eric.aragon@gmail.com \u00b7 951-203-1704', M, y);
 
   const ln=fv('a-pg-last'), fn=fv('a-pg-first'), mn=(fv('a-minor1')||'').replace(/\s+/g,'_');
   doc.save(`AlpineSlide_Waiver_${ln}_${fn}_${mn}.pdf`);
@@ -775,11 +883,15 @@ function emailEric(type){
   const name = type==='alpine' ? fv('a-minor1') : fv('m-first')+' '+fv('m-last');
   const subject = type==='alpine'
     ? `Alpine Slide Waiver — ${name}`
-    : `MTB Participant Form — ${name}`;
+    : `Mountain Biking Participant Form — ${name}`;
   const body = type==='alpine'
     ? `Hi Eric,\n\nAttached is the completed Alpine Slide waiver for ${name}.\n\nThanks`
-    : `Hi Eric,\n\nAttached is the completed MTB participant info form for ${name}.\n\nThanks`;
-  window.location.href = `mailto:Eric.aragon@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    : `Hi Eric,\n\nAttached is the completed mountain biking participant info form for ${name}.\n\nThanks`;
+  const a = document.createElement('a');
+  a.href = `mailto:Eric.aragon@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 document.getElementById('a-sig-date').valueAsDate = new Date();
